@@ -44,18 +44,39 @@
 
         .custom-cursor {
             position: fixed;
-            width: 22px;
-            height: 22px;
-            background: radial-gradient(circle, var(--primary) 30%, transparent 70%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--primary) 20%, var(--secondary) 60%, transparent 80%);
+            border: 2px solid var(--accent);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: transform 0.15s ease;
+            transition: transform 0.2s ease, background 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+        }
+
+        .custom-cursor::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 1.5s infinite;
         }
 
         .custom-cursor.grow {
-            transform: translate(-50%, -50%) scale(1.8);
+            transform: translate(-50%, -50%) scale(1.5);
+            background: radial-gradient(circle, var(--secondary) 20%, var(--primary) 60%, transparent 80%);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.4; }
         }
 
         header {
@@ -120,6 +141,17 @@
         @keyframes glowPulse {
             0%, 100% { box-shadow: var(--glow); }
             50% { box-shadow: 0 0 30px rgba(255, 107, 107, 0.6); }
+        }
+
+        @keyframes fadeInRotate {
+            0% { opacity: 0; transform: rotateY(90deg); }
+            100% { opacity: 1; transform: rotateY(0deg); }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            60% { opacity: 0.9; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         .nav-container {
@@ -228,6 +260,7 @@
         section:nth-child(3) { animation-delay: 0.4s; }
         section:nth-child(4) { animation-delay: 0.6s; }
         section:nth-child(5) { animation-delay: 0.8s; }
+        section:nth-child(6) { animation-delay: 1.0s; }
 
         @keyframes riseIn {
             to { transform: translateY(0); opacity: 1; }
@@ -253,6 +286,9 @@
             text-align: center;
             position: relative;
             letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: bounceIn 1s ease-out forwards;
         }
 
         h2::after {
@@ -265,6 +301,8 @@
             background: var(--bg-gradient);
             transform: translateX(-50%);
             border-radius: 8px;
+            opacity: 0;
+            animation: slideUp 1s ease-out forwards 0.3s;
         }
 
         .about-container {
@@ -323,6 +361,21 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .hometown-text {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hometown-text p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpText 0.8s ease-out forwards;
+        }
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -336,7 +389,7 @@
             overflow: hidden;
             border-radius: 25px;
             box-shadow: var(--soft-shadow);
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
             opacity: 0;
             transform: scale(0.8);
         }
@@ -345,12 +398,6 @@
         .gallery-item:nth-child(2) { animation: bounceIn 0.8s ease-out 0.3s forwards; }
         .gallery-item:nth-child(3) { animation: bounceIn 0.8s ease-out 0.4s forwards; }
         .gallery-item:nth-child(4) { animation: bounceIn 0.8s ease-out 0.5s forwards; }
-
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            60% { opacity: 0.9; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
-        }
 
         .gallery-item img {
             width: 100%;
@@ -361,6 +408,7 @@
 
         .gallery-item:hover {
             transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4);
         }
 
         .gallery-item:hover img {
@@ -414,6 +462,7 @@
             border-radius: 50%;
             background: var(--bg-gradient);
             box-shadow: 0 0 0 5px white;
+            animation: pulse 2s infinite;
         }
 
         .timeline-title {
@@ -421,6 +470,8 @@
             font-weight: 600;
             margin-bottom: 1rem;
             color: var(--dark);
+            opacity: 0;
+            animation: fadeInRotate 0.8s ease-out forwards;
         }
 
         .timeline-location {
@@ -428,11 +479,15 @@
             color: var(--text-light);
             margin-bottom: 1.2rem;
             font-size: 1rem;
+            opacity: 0;
+            animation: fadeInRotate 0.8s ease-out forwards 0.2s;
         }
 
         .timeline-description {
             line-height: 1.9;
             font-size: 1rem;
+            opacity: 0;
+            animation: fadeInRotate 0.8s ease-out forwards 0.4s;
         }
 
         .achievements {
@@ -453,6 +508,8 @@
             color: var(--dark);
             font-size: 1.2rem;
             text-align: center;
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards;
         }
 
         .achievements ul {
@@ -462,6 +519,8 @@
         .achievements li {
             margin-bottom: 1rem;
             font-size: 1rem;
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards;
         }
 
         .achievements li::marker {
@@ -487,7 +546,7 @@
             padding: 2.5rem;
             border-radius: 25px;
             box-shadow: var(--card-shadow);
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
             opacity: 0;
             transform: translateY(20px);
             animation: slideUp 0.8s ease-out forwards;
@@ -497,6 +556,7 @@
 
         .skill-category:hover {
             transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4);
         }
 
         .skill-category h3 {
@@ -505,6 +565,8 @@
             margin-bottom: 1.8rem;
             color: var(--dark);
             text-align: center;
+            opacity: 0;
+            animation: bounceIn 0.8s ease-out forwards;
         }
 
         .skill-item {
@@ -517,6 +579,8 @@
             margin-bottom: 1rem;
             font-weight: 600;
             font-size: 1.1rem;
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards;
         }
 
         .skill-level {
@@ -564,7 +628,13 @@
             flex: 1;
             min-width: 160px;
             transition: transform 0.5s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: bounceIn 0.8s ease-out forwards;
         }
+
+        .contact-item:nth-child(2) { animation-delay: 0.2s; }
+        .contact-item:nth-child(3) { animation-delay: 0.4s; }
 
         .contact-item:hover {
             transform: translateY(-8px);
@@ -596,12 +666,16 @@
             margin-bottom: 1rem;
             font-size: 1.3rem;
             color: var(--dark);
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards;
         }
 
         .contact-text p {
             color: var(--text);
             font-weight: 500;
             font-size: 1rem;
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards 0.2s;
         }
 
         .contact-text a {
@@ -630,6 +704,9 @@
             font-size: 1.1rem;
             box-shadow: var(--glow);
             transition: transform 0.5s ease, box-shadow 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.8s ease-out forwards;
         }
 
         .download-btn:hover {
@@ -664,12 +741,16 @@
             font-size: 1rem;
             resize: vertical;
             box-shadow: var(--soft-shadow);
-            transition: border-color 0.4s ease;
+            transition: border-color 0.4s ease, transform 0.4s ease;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: bounceIn 0.8s ease-out forwards;
         }
 
         .text-analyzer textarea:focus {
             border-color: var(--primary);
             outline: none;
+            transform: scale(1.02);
         }
 
         .analyze-btn {
@@ -684,6 +765,9 @@
             cursor: pointer;
             box-shadow: var(--glow);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.8s ease-out forwards;
         }
 
         .analyze-btn:hover {
@@ -705,6 +789,8 @@
             color: var(--dark);
             margin-bottom: 1.5rem;
             text-align: center;
+            opacity: 0;
+            animation: bounceIn 0.8s ease-out forwards;
         }
 
         #analysis-results table {
@@ -714,6 +800,9 @@
             background: var(--accent-light);
             border-radius: 15px;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.8s ease-out forwards;
         }
 
         #analysis-results th,
@@ -769,7 +858,13 @@
             color: white;
             font-size: 1.4rem;
             transition: background 0.5s ease, transform 0.5s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: bounceIn 0.8s ease-out forwards;
         }
+
+        .social-link:nth-child(2) { animation-delay: 0.2s; }
+        .social-link:nth-child(3) { animation-delay: 0.4s; }
 
         .social-link:hover {
             background: var(--primary);
@@ -779,6 +874,8 @@
         .footer-text {
             font-size: 1rem;
             color: rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            animation: slideUpText 0.8s ease-out forwards;
         }
 
         #particles-js {
@@ -897,6 +994,7 @@
             <div class="logo">SS</div>
             <div class="nav-links">
                 <a href="#about">About</a>
+                <a href="#hometown">Hometown</a>
                 <a href="#education">Education</a>
                 <a href="#skills">Skills</a>
                 <a href="#contact">Contact</a>
@@ -913,8 +1011,15 @@
                     <img src="assets/profile.jpg" alt="Sambhavi Singh's Profile Photo" class="profile-img">
                 </div>
                 <div class="about-text">
-                    <p>I'm Sambhavi Singh, a first-year B.Tech Computer Science student at IIIT Hyderabad, passionate about weaving technology with creativity. Hailing from Bhopal, I enjoy solving problems through code, exploring new ideas, and balancing my tech journey with hobbies like reading novels, playing badminton, watching movies, cheering for cricket, and dancing.</p>
+                    <p>I'm Sambhavi Singh, a first-year B.Tech Computer Science student at IIIT Hyderabad, passionate about weaving technology with creativity. I enjoy solving problems through code, exploring new ideas, and balancing my tech journey with hobbies like reading novels, playing badminton and cricket, watching movies, and dancing.</p>
                 </div>
+            </div>
+        </section>
+
+        <section id="hometown" class="hometown">
+            <h2>My Hometown - Bhopal</h2>
+            <div class="hometown-text">
+                <p>Bhopal, the City of Lakes, is where I grew up. Known for its stunning lakes, rich history, and vibrant culture, it’s a place that blends tradition with modernity. From the serene Upper Lake to the historic Taj-ul-Masajid, Bhopal has shaped my love for beauty and balance.</p>
             </div>
             <div class="gallery">
                 <div class="gallery-item" data-tilt>
@@ -1064,12 +1169,12 @@
                     </div>
                     <div class="contact-text">
                         <h4>Phone</h4>
-                        <p><a href="tel:+919826709008">+91 9826709008</a></p>
+                        <p><a href="tel:+919999922832">+91 9999922832</a></p>
                     </div>
                 </div>
             </div>
             <div class="cv-download">
-                <a href="assets/cv.pdf or https://drive.google.com/file/d/1X98p3kViu6shB4yJ2uW2RV_NxIajrT0s/view?usp=sharing" class="download-btn" download>
+                <a href="assets/cv.pdf" class="download-btn" download>
                     <i class="fas fa-download"></i>Download My CV
                 </a>
             </div>
@@ -1198,7 +1303,8 @@
             y: -30,
             opacity: 0,
             stagger: 0.15,
-            ease: 'power4.out'
+            ease: 'power4.out',
+            rotationX: 90
         });
 
         const sections = document.querySelectorAll('section');
@@ -1218,7 +1324,8 @@
                         duration: 1.2,
                         y: 0,
                         opacity: 1,
-                        ease: 'power4.out'
+                        ease: 'power4.out',
+                        rotationY: 0
                     });
                 }
             });
@@ -1366,7 +1473,8 @@
                 opacity: 0,
                 y: 20,
                 stagger: 0.2,
-                ease: 'power4.out'
+                ease: 'power4.out',
+                rotationX: 90
             });
         }
     </script>
