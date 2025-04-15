@@ -1201,58 +1201,101 @@
 
     <script>
         // Event Tracking Function
-        function trackUserEvents() {
-            function getElementType(element) {
-                const tag = element.tagName.toLowerCase();
-                const classList = element.classList;
-                const role = element.getAttribute('role');
-                const ariaLabel = element.getAttribute('aria-label');
+// Event Tracking Function
+function trackUserEvents() {
+    function getElementType(element) {
+        const tag = element.tagName.toLowerCase();
+        const classList = element.classList;
+        const role = element.getAttribute('role');
+        const ariaLabel = element.getAttribute('aria-label');
 
-                if (tag === 'img') return 'image';
-                if (tag === 'a') return 'link';
-                if (tag === 'button' || classList.contains('download-btn') || classList.contains('analyze-btn')) return 'button';
-                if (tag === 'select' || role === 'combobox') return 'drop-down';
-                if (tag === 'p' || tag === 'span' || tag === 'div' && !classList.contains('gallery-item')) return 'text';
-                if (classList.contains('gallery-item')) return 'image';
-                if (classList.contains('contact-icon')) return 'icon';
-                if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') return 'heading';
-                if (ariaLabel && ariaLabel.includes('social')) return 'social-link';
-                return tag;
-            }
+        if (tag === 'img') return 'image';
+        if (tag === 'a') return 'link';
+        if (tag === 'button' || classList.contains('download-btn') || classList.contains('analyze-btn')) return 'button';
+        if (tag === 'select' || role === 'combobox') return 'drop-down';
+        if (tag === 'p' || tag === 'span' || tag === 'div' && !classList.contains('gallery-item')) return 'text';
+        if (classList.contains('gallery-item')) return 'image';
+        if (classList.contains('contact-icon')) return 'icon';
+        if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') return 'heading';
+        if (ariaLabel && ariaLabel.includes('social')) return 'social-link';
+        return tag;
+    }
 
-            function logEvent(type, element) {
-                const timestamp = new Date().toISOString();
-                const elementType = getElementType(element);
-                console.log(`${timestamp}, ${type}, ${elementType}`);
-            }
+    function logEvent(type, element, additionalInfo = '') {
+        const timestamp = new Date().toISOString();
+        const elementType = getElementType(element);
+        const elementId = element.id || element.className || 'unnamed';
+        const logMessage = `${timestamp}, ${type}, ${elementType}, ${elementId}${additionalInfo ? `, ${additionalInfo}` : ''}`;
+        console.log(logMessage);
+    }
 
-            document.addEventListener('click', (event) => {
-                const target = event.target;
-                logEvent('click', target);
-            }, true);
+    // Click Event
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        logEvent('click', target);
+    }, true);
 
-            const sections = document.querySelectorAll('section');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+    // Hover Events (mouseenter and mouseleave)
+    document.addEventListener('mouseenter', (event) => {
+        const target = event.target;
+        logEvent('hover_start', target);
+    }, true);
 
-            const sectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        logEvent('view', entry.target);
-                        sectionObserver.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
+    document.addEventListener('mouseleave', (event) => {
+        const target = event.target;
+        logEvent('hover_end', target);
+    }, true);
 
-            sections.forEach(section => {
-                sectionObserver.observe(section);
-            });
-
-            logEvent('view', document.body);
+    // Scroll Event
+    let lastScrollTime = 0;
+    const scrollThrottle = 500; // Log scroll events every 500ms to avoid spam
+    window.addEventListener('scroll', () => {
+        const currentTime = Date.now();
+        if (currentTime - lastScrollTime > scrollThrottle) {
+            logEvent('scroll', document.body, `scrollY: ${window.scrollY}`);
+            lastScrollTime = currentTime;
         }
+    });
+
+    // Focus and Blur Events
+    document.addEventListener('focus', (event) => {
+        const target = event.target;
+        if (target.matches('input, textarea, button, a')) {
+            logEvent('focus', target);
+        }
+    }, true);
+
+    document.addEventListener('blur', (event) => {
+        const target = event.target;
+        if (target.matches('input, textarea, button, a')) {
+            logEvent('blur', target);
+        }
+    }, true);
+
+    // View Events for Sections
+    const sections = document.querySelectorAll('section');
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                logEvent('view', entry.target, `section: ${entry.target.id}`);
+                sectionObserver.unobserve(entry.target); // Unobserve to log only once
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+
+    // Initial Page Load
+    logEvent('view', document.body, 'page_load');
+}
 
         trackUserEvents();
 
